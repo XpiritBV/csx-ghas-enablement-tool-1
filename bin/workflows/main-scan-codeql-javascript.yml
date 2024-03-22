@@ -1,0 +1,31 @@
+name: MAIN BRANCH CodeQL Scan - Javascript/Typescript
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # CRON Schedule goes here - this will run at 00:00 on Sunday
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  codeql-scan-javascript:
+    # uses: the-owner/the-repo/.github/workflows/reusable-codeql-javascript@v1
+    uses: ./.github/workflows/reusable-codeql-javascript.yml
+    with:
+      # Using the larger CodeQL suite here for more comprehensive scanning.
+      # If you want to use a different query suite, you can specify it here.
+      # The GHAS out-of-the-box query suites are:
+      #   `null` - The default suite of queries. Only high precision queries.
+      #            Recommended for pull request workflows.
+      #   `security-extended` - Queries from the default suite, plus lower severity and lower precision queries.
+      #   `security-and-quality` - Queries from security-extended suite, plus maintainability and reliability queries.
+      #                            Recommended for use in main branch workflows.
+      # For info about CodeQL query suites see: https://docs.github.com/en/code-security/code-scanning/managing-your-code-scanning-configuration/codeql-query-suites
+      # and: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
+      codeql-suite: 'security-and-quality'
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+

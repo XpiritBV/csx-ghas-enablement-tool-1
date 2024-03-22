@@ -1,0 +1,29 @@
+name: PR CodeQL Scan - Python
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  codeql-scan-javascript:
+    # uses: the-owner/the-repo/.github/workflows/reusable-codeql-python@v1
+    uses: ./.github/workflows/reusable-codeql-python.yml
+    # with:
+    #   # Using the default codeql suite since it will take less time and only use high precision queries.
+    #   # If you want to use a different query suite, you can specify it here.
+    #   # The GHAS out-of-the-box query suites are:
+    #   #   `null` - The default suite of queries. Only high precision queries.
+    #   #            Recommended for pull request workflows.
+    #   #   `security-extended` - Queries from the default suite, plus lower severity and lower precision queries.
+    #   #   `security-and-quality` - Queries from security-extended suite, plus maintainability and reliability queries.
+    #   #                            Recommended for use in main branch workflows.
+    #   # For info about CodeQL query suites see: https://docs.github.com/en/code-security/code-scanning/managing-your-code-scanning-configuration/codeql-query-suites
+    #   # and: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
+    #   codeql_suite: null
+
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
