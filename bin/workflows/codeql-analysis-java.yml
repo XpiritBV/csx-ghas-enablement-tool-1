@@ -17,57 +17,64 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: ["master", "main"]
-  schedule:
-    - cron: "27 4 * * 5"
+  workflow_dispatch:
 
-jobs:
+jjobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    timeout-minutes: 360
     permissions:
-      actions: read
-      contents: read
+      # required for all workflows
       security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["java"]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
-        # Use only 'java' to analyze code written in Java, Kotlin or both
-        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: ${{ matrix.language }}
-          queries: security-extended # security-and-quality
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: 'java-kotlin'
+        # queries: null # Using the default codeql suite since it will take less time and only use high precision queries.
+        #   If you want to use a different query suite, you can specify it here.
+        #   The GHAS out-of-the-box query suites are:
+        #     `null` - The default suite of queries. Only high precision queries.
+        #              Recommended for pull request workflows.
+        #     `security-extended` - Queries from the default suite, plus lower severity and lower precision queries.
+        #     `security-and-quality` - Queries from security-extended suite, plus maintainability and reliability queries.
+        #                              Recommended for use in main branch workflows.
+        #   For info about CodeQL query suites see: https://docs.github.com/en/code-security/code-scanning/managing-your-code-scanning-configuration/codeql-query-suites
+        #   and: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
 
-      # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
-      # If this step fails, then you should remove it and run the build manually (see below)
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+    # Setup Java language version to be used to build the application
+    - name: Setup Java language
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        #   The list of supported Java distributions can be found at:
+        #   https://github.com/actions/setup-java/tree/main#supported-distributions
+        java-version: '16'
 
-      # ℹ️ Command-line programs to run using the OS shell.
-      # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+    # Autobuild attempts to build the compiled language (Java and/or Kotlin) application.
+    # If this step fails, then you should remove it and run the build manually (see below)
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
 
-      #   If the Autobuild fails above, remove it and uncomment the following three lines.
-      #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
+    # ℹ️ Command-line programs to run using the OS shell.
+    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
-      # - run: |
-      #   echo "Run, Build Application using script"
-      #   ./location_of_script_within_repo/buildscript.sh
+    #   If the Autobuild fails above, remove it and uncomment the following three lines.
+    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        with:
-          category: "/language:${{matrix.language}}"
+    # - run: |
+    #     echo "Run, Build Application using script"
+    #     ./location_of_script_within_repo/buildscript.sh
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3

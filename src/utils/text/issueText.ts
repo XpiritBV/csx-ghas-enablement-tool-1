@@ -23,7 +23,7 @@ We are rolling out CodeQL per language/user, so if you have only got a pull requ
 
 Hopefully, you should see a nice green status tick next to CodeQL within the status section of the pull request. However, if you haven't, that's understandable. We have taken the best guess approach at configuring CodeQL for you, but 1) we are still maturing, and 2) CodeQL can differ repository by repository. 
 
-If you have a red X next to CodeQL, that means that CodeQL is not configured for your repository. You may need to go ahead and edit the codeql-analysis.yml file to get it working with your build process/codebase. Some information on that can be found below:
+If you have a red X next to CodeQL, that means that CodeQL is not configured for your repository. You may need to go ahead and edit the codeql workflow .yml files to get them working with your build process/codebase. Some information on that can be found below:
 
 1) [Complied Languages with CodeQL](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-the-codeql-workflow-for-compiled-languages)
 2) [Configuring Code Scanning](https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning).
