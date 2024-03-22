@@ -54,14 +54,12 @@ export const commitFileMac = async (
     return { status: 500, message: "no language on repo" };
   }
 
-  const fileName = `codeql-analysis-${codeQLLanguage}.yml`;
-
   try {
     gitCommands = generalCommands(
       owner,
       repo,
       branch,
-      fileName,
+      codeQLLanguage,
       authBaseURL,
     ) as commands;
     inform(gitCommands);
